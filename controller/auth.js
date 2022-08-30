@@ -11,11 +11,21 @@ export const register = async (req, res, next) => {
       username: req.body.username,
       email: req.body.email,
       password: hash,
+      name: req.body.name,
     });
     await newUser.save();
-    res.status(201).json({
-      message: "User created successfully",
-    });
+    const token = jwt.sign(
+      { id: newUser._id, isAdmin: newUser.isAdmin },
+      process.env.JWT_SECRET
+    );
+    const { password, isAdmin, ...newUserDetails } = newUser._doc;
+    res
+      .cookie("access_token", token, {
+        httpOnly: true,
+        maxAge: 24 * 60 * 60 * 1000,
+      })
+      .status(201)
+      .json({ ...newUserDetails, message: "User created successfully" });
     next();
   } catch (err) {
     next(err);
@@ -39,10 +49,12 @@ export const login = async (req, res, next) => {
       { id: user._id, isAdmin: user.isAdmin },
       process.env.JWT_SECRET
     );
-    const { password, isAdmin, ...userDetails } = user._doc;
+    const { password, ...userDetails } = user._doc;
+
     res
       .cookie("access_token", token, {
         httpOnly: true,
+        maxAge: 24 * 60 * 60 * 1000,
       })
       .status(200)
       .json({ ...userDetails });

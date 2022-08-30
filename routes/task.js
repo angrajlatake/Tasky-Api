@@ -5,6 +5,7 @@ import {
   getAllTask,
   getTask,
   updateTask,
+  getUserTasks,
 } from "../controller/task.js";
 import { verifyAdmin, verifyUser } from "../utils/verifyToken.js";
 
@@ -16,8 +17,10 @@ router.put("/:id", verifyUser, updateTask);
 //delete task
 router.delete("/:id/:projectId", verifyAdmin, deleteTask);
 //get task
-router.get("/:id", verifyUser, getTask);
+router.get("/:id", getTask);
 // get all tasks
-router.get("/", verifyUser, getAllTask);
+router.get("/", verifyAdmin, getAllTask);
+//get all task for user
+router.get("/user/:id", getUserTasks);
 
 export default router;

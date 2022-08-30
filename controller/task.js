@@ -11,6 +11,7 @@ export const createTask = async (req, res, next) => {
       await Project.findByIdAndUpdate(req.params.projectId, {
         $push: { tasks: savedTask._id },
       });
+      res.status(200).json({ message: "Task created" });
     } catch (err) {
       next(err);
     }
@@ -58,11 +59,11 @@ export const deleteTask = async (req, res, next) => {
 //get task
 export const getTask = async (req, res, next) => {
   try {
-    const foundTask = Task.findById(req.params.id);
+    const foundTask = await Task.findById(req.params.id);
     if (!foundTask) {
       return next(createError(404, "Task not found"));
     }
-    res.status(200).json(foundTask);
+    res.status(200).json([foundTask]);
   } catch (err) {
     next(err);
   }
@@ -71,6 +72,15 @@ export const getTask = async (req, res, next) => {
 export const getAllTask = async (req, res, next) => {
   try {
     const foundTasks = await Task.find({});
+    res.status(200).json(foundTasks);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getUserTasks = async (req, res, next) => {
+  try {
+    const foundTasks = await Task.find({ assignedTo: req.params.id });
     res.status(200).json(foundTasks);
   } catch (err) {
     next(err);

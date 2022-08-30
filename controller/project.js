@@ -54,6 +54,7 @@ export const getProject = async (req, res, next) => {
 export const getAllProjects = async (req, res, next) => {
   try {
     const foundProject = await Project.find({});
+    const { title, ...otherDetails } = foundProject;
     res.status(200).json(foundProject);
   } catch (err) {
     next(err);
