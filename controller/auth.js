@@ -23,6 +23,8 @@ export const register = async (req, res, next) => {
       .cookie("access_token", token, {
         httpOnly: true,
         maxAge: 24 * 60 * 60 * 1000,
+        sameSite: "strict",
+        secure: true,
       })
       .status(201)
       .json({ ...newUserDetails, message: "User created successfully" });
@@ -55,6 +57,12 @@ export const login = async (req, res, next) => {
       .cookie("access_token", token, {
         httpOnly: true,
         maxAge: 24 * 60 * 60 * 1000,
+        sameSite: "none",
+        secure: true,
+        path: "/",
+      })
+      .cookie("token", token, {
+        httpOnly: true,
       })
       .status(200)
       .json({ ...userDetails });

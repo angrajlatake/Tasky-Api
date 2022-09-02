@@ -26,7 +26,7 @@ mongoose.connection.on("error", () => {
 });
 
 //middleware
-app.use(cors({ credentials: true }));
+app.use(cors());
 app.use(cookieParser());
 app.use(express.json());
 
@@ -49,4 +49,8 @@ app.use((err, req, res, next) => {
 app.listen(8080, () => {
   connect();
   console.log("Server started on port 8080");
+});
+
+app.get("/", (req, res) => {
+  res.send("Welcome to Bugtracker API");
 });
