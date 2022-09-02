@@ -9,6 +9,7 @@ import userRoute from "./routes/user.js";
 import projectsRoute from "./routes/project.js";
 import taskRoute from "./routes/task.js";
 
+const PORT = process.env.PORT || 8080;
 const app = express();
 dotenv.config();
 
@@ -46,7 +47,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(8080, () => {
+app.listen(PORT, () => {
   connect();
   console.log("Server started on port 8080");
 });
