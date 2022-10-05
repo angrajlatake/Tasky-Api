@@ -4,6 +4,7 @@ import cors from "cors";
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
 import multer from "multer";
+import path from "path";
 
 import authRoute from "./routes/auth.js";
 import userRoute from "./routes/user.js";
@@ -13,6 +14,7 @@ import { verifyToken } from "./utils/verifyToken.js";
 import { updateUser, updateUserImg } from "./controller/users.js";
 
 const PORT = process.env.PORT || 8080;
+const __dirname = path.resolve();
 const app = express();
 
 dotenv.config();
