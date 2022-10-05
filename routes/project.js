@@ -3,6 +3,7 @@ import {
   createProject,
   deleteProject,
   getAllProjects,
+  getAllUserProjects,
   getProject,
   updateProject,
 } from "../controller/project.js";
@@ -19,6 +20,8 @@ router.delete("/:id", verifyAdmin, deleteProject);
 //get project
 router.get("/:id", verifyAdmin, getProject);
 //get all projects
-router.get("/", verifyAdmin, getAllProjects);
+router.get("/", verifyAdmin, getAllUserProjects);
+//get all projects for super admin
+// router.get("/", verifyAdmin, getAllProjects);
 
 export default router;

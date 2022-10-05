@@ -8,7 +8,7 @@ export const createTask = async (req, res, next) => {
   try {
     const savedTask = await newTask.save();
     try {
-      await Project.findByIdAndUpdate(req.params.projectId, {
+      await Project.findByIdAndUpdate(req.params.id, {
         $push: { tasks: savedTask._id },
       });
       res.status(200).json({ message: "Task created" });
@@ -22,17 +22,18 @@ export const createTask = async (req, res, next) => {
 //update task
 export const updateTask = async (req, res, next) => {
   try {
-    const foundTask = Task.findByIdAndUpdate(
+    const foundTask = await Task.findByIdAndUpdate(
       req.params.id,
       {
         $set: req.body,
       },
       { new: true }
     );
+
     if (!foundTask) {
       return next(createError(404, "Task not found"));
     }
-    res.status(200).json({ message: "Task updated" });
+    res.status(200).send(foundTask);
   } catch (err) {
     next(err);
   }
@@ -40,7 +41,7 @@ export const updateTask = async (req, res, next) => {
 //delete task
 export const deleteTask = async (req, res, next) => {
   try {
-    const foundTask = Task.findByIdAndDelete(req.params.id);
+    const foundTask = await Task.findByIdAndDelete(req.params.id);
     if (!foundTask) {
       return next(createError(404, "Task not found"));
     }
@@ -71,7 +72,25 @@ export const getTask = async (req, res, next) => {
 // get all tasks
 export const getAllTask = async (req, res, next) => {
   try {
-    const foundTasks = await Task.find({});
+    const foundProject = await Project.find(
+      {
+        manager: req.user.id,
+      },
+      "tasks"
+    );
+    let taskID = [];
+    foundProject.forEach((element) => (taskID = [...taskID, ...element.tasks]));
+    const foundTasks = await Task.find({ _id: { $in: taskID } });
+    res.status(200).json(foundTasks);
+  } catch (err) {
+    next(err);
+  }
+};
+// get all Project tasks
+export const getAllProjectTask = async (req, res, next) => {
+  try {
+    const foundProject = await Project.findById(req.params.id, "tasks");
+    const foundTasks = await Task.find({ _id: { $in: foundProject.tasks } });
     res.status(200).json(foundTasks);
   } catch (err) {
     next(err);
@@ -81,6 +100,9 @@ export const getAllTask = async (req, res, next) => {
 export const getUserTasks = async (req, res, next) => {
   try {
     const foundTasks = await Task.find({ assignedTo: req.params.id });
+    if (foundTasks.length === 0) {
+      return next(createError(404, "Tasks for user not found"));
+    }
     res.status(200).json(foundTasks);
   } catch (err) {
     next(err);

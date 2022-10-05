@@ -57,12 +57,34 @@ export const login = async (req, res, next) => {
       .cookie("access_token", token, {
         httpOnly: true,
         maxAge: 24 * 60 * 60 * 1000,
-        sameSite: "none",
+        sameSite: "strict",
         secure: true,
-        path: "/",
       })
-      .cookie("token", token, {
+      .status(200)
+      .json({ ...userDetails });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const refreshToken = async (req, res, next) => {
+  try {
+    const user = await Users.findById(req.user.id);
+    if (!user) {
+      return next(createError(404, "User not found"));
+    }
+    const token = jwt.sign(
+      { id: user._id, isAdmin: user.isAdmin },
+      process.env.JWT_SECRET
+    );
+    const { password, ...userDetails } = user._doc;
+
+    res
+      .cookie("access_token", token, {
         httpOnly: true,
+        maxAge: 24 * 60 * 60 * 1000,
+        sameSite: "strict",
+        secure: true,
       })
       .status(200)
       .json({ ...userDetails });

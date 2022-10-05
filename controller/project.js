@@ -1,5 +1,6 @@
 import Project from "../models/project.js";
 import { createError } from "../utils/error.js";
+import jwt from "jsonwebtoken";
 
 export const createProject = async (req, res, next) => {
   try {
@@ -46,6 +47,17 @@ export const getProject = async (req, res, next) => {
     if (!foundProject) {
       return next(createError(404, "Project not found"));
     }
+    res.status(200).json(foundProject);
+  } catch (err) {
+    next(err);
+  }
+};
+export const getAllUserProjects = async (req, res, next) => {
+  try {
+    const foundProject = await Project.find({
+      manager: req.user.id,
+    });
+    const { title, ...otherDetails } = foundProject;
     res.status(200).json(foundProject);
   } catch (err) {
     next(err);

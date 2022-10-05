@@ -3,15 +3,31 @@ import dotenv from "dotenv";
 import cors from "cors";
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
+import multer from "multer";
 
 import authRoute from "./routes/auth.js";
 import userRoute from "./routes/user.js";
 import projectsRoute from "./routes/project.js";
 import taskRoute from "./routes/task.js";
+import { verifyToken } from "./utils/verifyToken.js";
+import { updateUser, updateUserImg } from "./controller/users.js";
 
 const PORT = process.env.PORT || 8080;
 const app = express();
+
 dotenv.config();
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "./public/images/users");
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, file.fieldname + "-" + uniqueSuffix + ".jpg");
+  },
+});
+
+export const upload = multer({ storage: storage });
 
 const connect = async () => {
   try {
@@ -27,7 +43,14 @@ mongoose.connection.on("error", () => {
 });
 
 //middleware
-app.use(cors());
+const corsOptions = {
+  //To allow requests from client
+  origin: ["http://localhost:3000", "http://127.0.0.1"],
+  credentials: true,
+  exposedHeaders: ["Set-cookie"],
+};
+app.use("/public", express.static("public"));
+app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
 
@@ -52,6 +75,8 @@ app.listen(PORT, () => {
   console.log("Server started on port 8080");
 });
 
+app.post("/profile/:id", upload.single("image"), verifyToken, updateUserImg);
+
 app.get("/", (req, res) => {
-  res.send("Welcome to Bugtracker API");
+  res.redirect("https://documenter.getpostman.com/view/19563435/2s83zcT7C3");
 });

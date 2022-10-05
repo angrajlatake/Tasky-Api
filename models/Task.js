@@ -23,6 +23,7 @@ const taskSchema = new Schema(
     },
     assignedTo: {
       type: String,
+      default: null,
     },
     desc: {
       type: String,
