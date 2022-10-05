@@ -45,7 +45,6 @@ mongoose.connection.on("error", () => {
 //middleware
 const corsOptions = {
   //To allow requests from client
-  origin: ["https://angrajlatake-tasky.netlify.app"],
   credentials: true,
   exposedHeaders: ["Set-cookie"],
 };
