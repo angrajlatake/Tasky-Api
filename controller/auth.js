@@ -57,7 +57,7 @@ export const login = async (req, res, next) => {
       .cookie("access_token", token, {
         httpOnly: true,
         maxAge: 24 * 60 * 60 * 1000,
-        sameSite: "strict",
+        sameSite: "none",
         secure: true,
       })
       .status(200)
@@ -83,7 +83,7 @@ export const refreshToken = async (req, res, next) => {
       .cookie("access_token", token, {
         httpOnly: true,
         maxAge: 24 * 60 * 60 * 1000,
-        sameSite: "strict",
+        sameSite: "none",
         secure: true,
       })
       .status(200)
