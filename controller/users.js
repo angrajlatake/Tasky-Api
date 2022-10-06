@@ -27,7 +27,7 @@ export const updateUserImg = async (req, res, next) => {
     const foundUser = await Users.findByIdAndUpdate(
       req.params.id,
       {
-        $set: { image: `${process.env.API_URL}${req.file.path}` },
+        $set: { image: `${process.env.PORT}${req.file.path}` },
       },
       { new: true }
     );
