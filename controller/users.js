@@ -23,11 +23,12 @@ export const updateUser = async (req, res, next) => {
 };
 export const updateUserImg = async (req, res, next) => {
   if (!req.file) return createError(404, "File not uploaded");
+  var host = req.get("host");
   try {
     const foundUser = await Users.findByIdAndUpdate(
       req.params.id,
       {
-        $set: { image: `${process.env.PORT}${req.file.path}` },
+        $set: { image: `${host}/${req.file.path}` },
       },
       { new: true }
     );
