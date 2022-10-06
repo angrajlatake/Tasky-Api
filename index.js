@@ -55,7 +55,7 @@ app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
 
-app.use(express.static(path.join(__dirname, "public")));
+app.use("/public", express.static(path.join(__dirname, "public")));
 app.use("/auth", authRoute);
 app.use("/user", userRoute);
 app.use("/projects", projectsRoute);
