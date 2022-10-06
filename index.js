@@ -22,7 +22,7 @@ dotenv.config();
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "public/images/users");
+    cb(null, "./public/images/users");
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
@@ -75,7 +75,7 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
   connect();
   console.log(__dirname);
-  console.log("Server started on port 8080");
+  console.log(`Server started on ${PORT}`);
 });
 
 app.post("/profile/:id", upload.single("image"), verifyToken, updateUserImg);
