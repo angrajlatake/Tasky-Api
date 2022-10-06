@@ -15,13 +15,14 @@ import { updateUser, updateUserImg } from "./controller/users.js";
 
 const PORT = process.env.PORT || 8080;
 const __dirname = path.resolve();
+
 const app = express();
 
 dotenv.config();
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "./public/images/users");
+    cb(null, "public/images/users");
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
@@ -47,10 +48,10 @@ mongoose.connection.on("error", () => {
 //middleware
 const corsOptions = {
   //To allow requests from client
-  origin: "https://angrajlatake-tasky.netlify.app",
+  origin: "https://localhost:3000",
   credentials: true,
 };
-app.use("/public", express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "public")));
 app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
@@ -73,6 +74,7 @@ app.use((err, req, res, next) => {
 
 app.listen(PORT, () => {
   connect();
+  console.log(__dirname);
   console.log("Server started on port 8080");
 });
 
