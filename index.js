@@ -48,7 +48,7 @@ mongoose.connection.on("error", () => {
 //middleware
 const corsOptions = {
   //To allow requests from client
-  origin: "https://localhost:3000",
+  origin: "https://angrajlatake-tasky.netlify.app/",
   credentials: true,
 };
 app.use(express.static(path.join(__dirname, "public")));
