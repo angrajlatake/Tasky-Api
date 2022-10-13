@@ -5,7 +5,7 @@ import { createError } from "../utils/error.js";
 export const createTodo = async (req, res, next) => {
   const userId = req.params.id;
   const newTodo = new Todo({
-    todo: req.body,
+    todo: req.body.todo,
     user: userId,
   });
 
