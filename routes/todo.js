@@ -19,4 +19,8 @@ router.delete("/:id", verifyUser, deleteTodo);
 
 router.get("/:id", verifyUser, getTodo);
 
+router.get("/", (req, res) => {
+  res.send("todo route");
+});
+
 export default router;

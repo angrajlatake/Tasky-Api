@@ -61,7 +61,7 @@ app.use("/auth", authRoute);
 app.use("/user", userRoute);
 app.use("/projects", projectsRoute);
 app.use("/task", taskRoute);
-app.use("/todo", taskRoute);
+app.use("/todo", todoRoute);
 
 app.use((err, req, res, next) => {
   const errStatus = err.status || 500;
