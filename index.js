@@ -10,6 +10,7 @@ import authRoute from "./routes/auth.js";
 import userRoute from "./routes/user.js";
 import projectsRoute from "./routes/project.js";
 import taskRoute from "./routes/task.js";
+import todoRoute from "./routes/todo.js";
 import { verifyToken } from "./utils/verifyToken.js";
 import { updateUser, updateUserImg } from "./controller/users.js";
 
@@ -60,6 +61,7 @@ app.use("/auth", authRoute);
 app.use("/user", userRoute);
 app.use("/projects", projectsRoute);
 app.use("/task", taskRoute);
+app.use("/todo", taskRoute);
 
 app.use((err, req, res, next) => {
   const errStatus = err.status || 500;
