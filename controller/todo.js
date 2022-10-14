@@ -36,7 +36,7 @@ export const updateTodo = async (req, res, next) => {
       { new: true }
     );
     try {
-      const foundTodos = await Todo.find({ user: userId });
+      const foundTodos = await Todo.find({ user: req.user });
       if (!foundTodos) {
         return next(createError(404, "Tasks for user not found"));
       }
