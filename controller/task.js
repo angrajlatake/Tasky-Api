@@ -8,9 +8,13 @@ export const createTask = async (req, res, next) => {
   try {
     const savedTask = await newTask.save();
     try {
-      const foundProject = await Project.findByIdAndUpdate(req.params.id, {
-        $push: { tasks: savedTask._id },
-      });
+      const foundProject = await Project.findByIdAndUpdate(
+        req.params.id,
+        {
+          $push: { tasks: savedTask._id },
+        },
+        { new: true }
+      );
       const foundTasks = await Task.find({ _id: { $in: foundProject.tasks } });
       res.status(200).json({
         message: "Task created",
@@ -55,7 +59,8 @@ export const deleteTask = async (req, res, next) => {
         req.params.projectId,
         {
           $pull: { tasks: foundTask._id },
-        }
+        },
+        { new: true }
       );
 
       res.status(200).json({
