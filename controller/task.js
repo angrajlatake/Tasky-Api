@@ -49,28 +49,31 @@ export const updateTask = async (req, res, next) => {
 };
 //delete task
 export const deleteTask = async (req, res, next) => {
-  try {
-    const foundTask = await Task.findByIdAndDelete(req.params.id);
-    if (!foundTask) {
-      return next(createError(404, "Task not found"));
-    }
+  if (req.params.id && req.params.projectId) {
     try {
-      const foundProject = await Project.findByIdAndUpdate(
-        req.params.projectId,
-        {
-          $pull: { tasks: foundTask._id },
-        },
-        { new: true }
-      );
+      const foundTask = await Task.findByIdAndDelete(req.params.id);
+      if (!foundTask) {
+        return next(createError(404, "Task not found"));
+      }
+      try {
+        const foundProject = await Project.findByIdAndUpdate(
+          req.params.projectId,
+          {
+            $pull: { tasks: foundTask._id },
+          },
+          { new: true }
+        );
 
-      res.status(200).json({
-        message: "Task deleted",
-      });
+        res.status(200).json({
+          message: "Task deleted",
+        });
+      } catch (err) {
+        next(err);
+      }
     } catch (err) {
       next(err);
     }
-  } catch (err) {
-    next(err);
+    return next(createError(404, "Incorrect parameters"));
   }
 };
 //get task
