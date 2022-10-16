@@ -6,7 +6,19 @@ export const createProject = async (req, res, next) => {
   try {
     const newProject = new Project(req.body);
     await newProject.save();
-    res.status(201).json({ message: "Project Created" });
+
+    try {
+      const foundProject = await Project.find({
+        manager: req.user.id,
+      });
+      const { title, ...otherDetails } = foundProject;
+
+      res
+        .status(200)
+        .json({ message: "Project Created", projects: foundProject });
+    } catch (err) {
+      next(err);
+    }
   } catch (err) {
     next(err);
   }

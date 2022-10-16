@@ -8,10 +8,15 @@ export const createTask = async (req, res, next) => {
   try {
     const savedTask = await newTask.save();
     try {
-      await Project.findByIdAndUpdate(req.params.id, {
+      const foundProject = await Project.findByIdAndUpdate(req.params.id, {
         $push: { tasks: savedTask._id },
       });
-      res.status(200).json({ message: "Task created" });
+      const foundTasks = await Task.find({ _id: { $in: foundProject.tasks } });
+      res.status(200).json({
+        message: "Task created",
+        newTask: savedTask,
+        projectTasks: foundTasks,
+      });
     } catch (err) {
       next(err);
     }
@@ -46,13 +51,19 @@ export const deleteTask = async (req, res, next) => {
       return next(createError(404, "Task not found"));
     }
     try {
-      await Project.findByIdAndUpdate(req.params.projectId, {
-        $pull: { tasks: foundTask._id },
+      const foundProject = await Project.findByIdAndUpdate(
+        req.params.projectId,
+        {
+          $pull: { tasks: foundTask._id },
+        }
+      );
+
+      res.status(200).json({
+        message: "Task deleted",
       });
     } catch (err) {
       next(err);
     }
-    res.status(200).json({ message: "Task deleted" });
   } catch (err) {
     next(err);
   }
